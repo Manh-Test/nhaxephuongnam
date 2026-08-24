@@ -1,0 +1,35 @@
+{
+  "name": "nhaxephuongnam",
+  "version": "1.0.0",
+  "description": "Nha Xe Phuong Nam - Bus Booking System (SQL Server)",
+  "main": "server.js",
+  "engines": {
+    "node": "15.7.0",
+    "npm": "7.4.3"
+  },
+  "scripts": {
+    "client-install": "npm install --prefix client",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "start": "node server.js",
+    "init-db": "node config/initDb.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^7.4.0",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "msnodesqlv8": "^5.2.3",
+    "mssql": "^9.1.1",
+    "nodemailer": "^6.7.8",
+    "nodemon": "^2.0.19",
+    "qrcode": "^1.5.4",
+    "stripe": "^10.8.0",
+    "uuid": "^9.0.0"
+  }
+}

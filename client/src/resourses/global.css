@@ -1,0 +1,199 @@
+:root {
+  --primary: #1e40af; /* Tailwind Blue 800 */
+  --primary-hover: #1d4ed8;
+  --secondary: #0f172a; /* Slate 900 */
+  --accent: #e11d48;
+  --success: #16a34a;
+  --bg-light: #f8fafc;
+  --border-color: #e2e8f0;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f1f5f9;
+  color: #1e293b;
+}
+
+/* Heights & Widths */
+.h-screen {
+  height: 100vh;
+}
+
+.w-400 {
+  width: 420px;
+  max-width: 90vw;
+}
+
+/* Inputs & Form Elements */
+input,
+select,
+textarea {
+  height: 42px;
+  border: 1px solid #cbd5e1;
+  width: 100%;
+  padding: 0 14px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #1e293b;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.15);
+}
+
+.ant-form-item {
+  margin-bottom: 16px !important;
+}
+
+.ant-form-item-label > label {
+  font-weight: 600 !important;
+  color: #334155 !important;
+  font-size: 13px !important;
+}
+
+/* Cards */
+.card {
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  border-radius: 12px !important;
+}
+
+/* Typography */
+.text-2xl { font-size: 28px !important; }
+.text-xl  { font-size: 22px !important; }
+.text-lg  { font-size: 18px !important; }
+.text-md  { font-size: 15px !important; }
+.text-sm  { font-size: 13px !important; }
+.text-xs  { font-size: 11px !important; }
+
+.font-bold { font-weight: 700 !important; }
+.font-semibold { font-weight: 600 !important; }
+
+.text-primary { color: var(--primary) !important; }
+.text-success { color: var(--success) !important; }
+.text-danger  { color: #dc2626 !important; }
+.text-muted   { color: #64748b !important; }
+
+.underline {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Modern Buttons */
+button {
+  border-radius: 8px !important;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.primary-btn {
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
+  border: 1px solid var(--primary) !important;
+  padding: 8px 18px;
+  cursor: pointer;
+  height: 42px;
+  border-radius: 8px !important;
+  font-size: 14px;
+}
+
+.primary-btn:hover {
+  background-color: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(30, 64, 175, 0.2);
+}
+
+.secondary-btn {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+  border: 1px solid #cbd5e1 !important;
+  padding: 8px 18px;
+  cursor: pointer;
+  height: 42px;
+  border-radius: 8px !important;
+  font-size: 14px;
+}
+
+.secondary-btn:hover {
+  background-color: #e2e8f0 !important;
+  border-color: #94a3b8 !important;
+  transform: translateY(-1px);
+}
+
+.outlined-btn {
+  background-color: #ffffff !important;
+  color: var(--primary) !important;
+  border: 1.5px solid var(--primary) !important;
+  padding: 8px 16px;
+  cursor: pointer;
+  height: 42px;
+  border-radius: 8px !important;
+  font-size: 14px;
+}
+
+.outlined-btn:hover {
+  background-color: #eff6ff !important;
+}
+
+.disabled-btn,
+button:disabled {
+  background-color: #cbd5e1 !important;
+  color: #94a3b8 !important;
+  border: 1px solid #cbd5e1 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Icons */
+i {
+  font-size: 18px;
+  vertical-align: middle;
+}
+
+/* Tables */
+.ant-table-wrapper {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ant-table-thead > tr > th {
+  background-color: #f8fafc !important;
+  font-weight: 700 !important;
+  color: #334155 !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+}
+
+/* Modals */
+.ant-modal-content {
+  border-radius: 14px !important;
+  overflow: hidden;
+}
+
+.ant-modal-header {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 16px 24px;
+}
+
+.ant-modal-title {
+  font-weight: 700 !important;
+  color: #1e293b !important;
+}

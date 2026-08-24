@@ -1,0 +1,121 @@
+.layout-parent {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  padding: 12px;
+  gap: 16px;
+  background-color: #f1f5f9;
+  overflow: hidden;
+}
+
+.sidebar {
+  background: linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 14px;
+  width: 260px;
+  min-width: 260px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+.sidebar.collapsed {
+  width: 72px;
+  min-width: 72px;
+  padding: 20px 8px;
+}
+
+.sidebar-header {
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 16px;
+}
+
+.logo {
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.sidebar.collapsed .logo {
+  text-align: center;
+  font-size: 18px;
+}
+
+.role {
+  color: #e2e8f0;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.menu {
+  margin-top: 8px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  width: 100%;
+  cursor: pointer;
+  border-radius: 10px;
+  color: #cbd5e1;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  gap: 12px;
+}
+
+.sidebar.collapsed .menu-item {
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.active-menu-item {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+.menu-item i {
+  font-size: 19px;
+  color: inherit;
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.header {
+  background-color: #ffffff;
+  border-radius: 14px;
+  padding: 14px 20px;
+  margin-bottom: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.content {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 14px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  overflow-y: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
