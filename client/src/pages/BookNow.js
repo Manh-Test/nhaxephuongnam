@@ -22,9 +22,18 @@ function BookNow() {
   const [holdSeconds, setHoldSeconds] = useState(600); // 10 minutes temporary seat hold
   const [bookingSuccessData, setBookingSuccessData] = useState(null);
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
+  const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
+  const [fakePaymentInfo, setFakePaymentInfo] = useState({
+    method: "Card",
+    cardNumber: "",
+    cardName: "",
+    expiry: "",
+    cvv: "",
+  });
 
   const selectedSeatsRef = useRef(selectedSeats);
   selectedSeatsRef.current = selectedSeats;
+  const initializedStopsRef = useRef(false);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -53,8 +62,9 @@ function BookNow() {
       if (response.data.success) {
         const busData = response.data.data;
         setBus(busData);
-        if (busData.stops && busData.stops.length >= 2) {
+        if (!initializedStopsRef.current && busData.stops && busData.stops.length >= 2) {
           setAlightingStopIndex(busData.stops.length - 1);
+          initializedStopsRef.current = true;
         }
       }
     } catch (error) {
@@ -183,7 +193,7 @@ function BookNow() {
     }
   };
 
-  // Perform Booking & Payment
+  // Open the demo payment form after validating the booking details.
   const handleCheckout = async () => {
     if (selectedSeats.length === 0) {
       message.warning("Vui lòng chọn ít nhất một chỗ ngồi!");
@@ -194,10 +204,28 @@ function BookNow() {
       return;
     }
 
+    setIsPaymentModalVisible(true);
+  };
+
+  const handleDemoPayment = async () => {
+    const cardDetailsMissing = fakePaymentInfo.method === "Card" && (
+      !fakePaymentInfo.cardNumber.trim() ||
+      !fakePaymentInfo.cardName.trim() ||
+      !fakePaymentInfo.expiry.trim() ||
+      !fakePaymentInfo.cvv.trim()
+    );
+    if (cardDetailsMissing) {
+      message.warning("Vui lòng nhập đầy đủ thông tin thanh toán mô phỏng!");
+      return;
+    }
+
+    setIsPaymentModalVisible(false);
+
     try {
       dispatch(ShowLoading());
       const paymentRes = await axiosInstance.post("/api/bookings/make-payment", {
         amount: finalTotal,
+        paymentMethod: fakePaymentInfo.method,
       });
 
       if (!paymentRes.data.success) {
@@ -218,6 +246,7 @@ function BookNow() {
         voucherCode: appliedVoucher ? appliedVoucher.code : "",
         discountAmount: discountAmount,
         totalAmount: finalTotal,
+        paymentMethod: fakePaymentInfo.method,
       });
       dispatch(HideLoading());
 
@@ -485,6 +514,105 @@ function BookNow() {
           </Col>
         </Row>
       )}
+
+      <Modal
+        title="Thanh toán mô phỏng"
+        visible={isPaymentModalVisible}
+        onCancel={() => setIsPaymentModalVisible(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsPaymentModalVisible(false)}>
+            Hủy
+          </Button>,
+          <Button key="pay" type="primary" onClick={handleDemoPayment}>
+            <i className="ri-secure-payment-line mr-1"></i> Thanh toán demo
+          </Button>,
+        ]}
+        width={480}
+      >
+        <Alert
+          className="mb-3"
+          message="Đây là thanh toán giả lập, không trừ tiền thật."
+          description={`Sau khi xác nhận, vé sẽ được tạo với tổng tiền ${finalTotal.toLocaleString("vi-VN")} VNĐ.`}
+          type="info"
+          showIcon
+        />
+        <div className="mb-3">
+          <label className="text-sm font-semibold d-block mb-2">Phương thức thanh toán</label>
+          <div className="d-flex gap-2">
+            {["Card", "MoMo", "VNPay"].map((method) => (
+              <Button
+                key={method}
+                type={fakePaymentInfo.method === method ? "primary" : "default"}
+                onClick={() => setFakePaymentInfo({ ...fakePaymentInfo, method })}
+              >
+                {method === "Card" ? "Thẻ ngân hàng" : method}
+              </Button>
+            ))}
+          </div>
+        </div>
+        {fakePaymentInfo.method === "Card" ? (
+          <>
+            <div className="mb-3">
+              <label className="text-sm font-semibold">Số thẻ giả lập</label>
+              <input
+                type="text"
+                inputMode="numeric"
+                placeholder="4242 4242 4242 4242"
+                value={fakePaymentInfo.cardNumber}
+                onChange={(e) => setFakePaymentInfo({ ...fakePaymentInfo, cardNumber: e.target.value })}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="text-sm font-semibold">Tên trên thẻ</label>
+              <input
+                type="text"
+                placeholder="NGUYEN VAN A"
+                value={fakePaymentInfo.cardName}
+                onChange={(e) => setFakePaymentInfo({ ...fakePaymentInfo, cardName: e.target.value })}
+              />
+            </div>
+            <Row gutter={12}>
+              <Col span={12}>
+                <label className="text-sm font-semibold">Ngày hết hạn</label>
+                <input
+                  type="text"
+                  placeholder="12/30"
+                  value={fakePaymentInfo.expiry}
+                  onChange={(e) => setFakePaymentInfo({ ...fakePaymentInfo, expiry: e.target.value })}
+                />
+              </Col>
+              <Col span={12}>
+                <label className="text-sm font-semibold">CVV</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="123"
+                  value={fakePaymentInfo.cvv}
+                  onChange={(e) => setFakePaymentInfo({ ...fakePaymentInfo, cvv: e.target.value })}
+                />
+              </Col>
+            </Row>
+          </>
+        ) : (
+          <div className="text-center p-3" style={{ background: "#f8fafc", borderRadius: 10 }}>
+            <p className="font-semibold mb-2">
+              Quét mã QR bằng ứng dụng {fakePaymentInfo.method} để thanh toán
+            </p>
+            <div className="d-flex justify-content-center mb-2">
+              <div style={{ background: "#fff", padding: 12, border: "1px solid #e2e8f0", borderRadius: 8 }}>
+                <QRCodeSVG
+                  value={`DEMO-${fakePaymentInfo.method}-PAYMENT-${finalTotal}-${bus?.id || bus?._id}`}
+                  size={180}
+                  level="M"
+                />
+              </div>
+            </div>
+            <p className="text-muted text-sm mb-0">
+              Đây là mã QR mô phỏng. Nhấn xác nhận để tiếp tục tạo vé.
+            </p>
+          </div>
+        )}
+      </Modal>
 
       {/* Success Booking & E-Ticket Modal */}
       <Modal

@@ -87,6 +87,17 @@ router.post("/delete-bus", authMiddleware, async (req, res) => {
     if (!existingBus) {
       return res.status(404).send({ success: false, message: "Không tìm thấy chuyến xe" });
     }
+    if (existingBus.status === "Completed") {
+      await Bus.findByIdAndUpdate(busId, {
+        status: "Archived",
+        driverId: null,
+        driverName: null,
+      });
+      return res.status(200).send({
+        success: true,
+        message: "Đã lưu trữ chuyến xe hoàn thành. Lịch sử đặt vé vẫn được giữ nguyên.",
+      });
+    }
     if (existingBus && existingBus.status && !["Yet To Start", "Completed"].includes(existingBus.status)) {
       return res.status(200).send({
         success: false,

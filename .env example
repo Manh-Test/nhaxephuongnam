@@ -1,0 +1,14 @@
+jwt_secret = "replace-with-a-local-secret"
+stripe_key = replace-with-your-stripe-key
+PORT = 5001
+
+# SQL Server Configuration (Windows Authentication)
+DB_SERVER = localhost
+DB_DATABASE = NhaXePhuongNam
+DB_TRUSTED_CONNECTION = true
+
+MAIL_USER = replace-with-sender-email
+MAIL_APP_PASSWORD = replace-with-mail-app-password
+MAIL_HOST = smtp.gmail.com
+MAIL_PORT = 465
+MAIL_RECEIPT_TO = replace-with-receipt-email

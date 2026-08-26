@@ -7,6 +7,7 @@ const Transaction = require("../models/transactionsModel");
 const stripe = require("stripe")(process.env.stripe_key);
 const { v4: uuidv4 } = require("uuid");
 const QRCode = require("qrcode");
+const { sendBookingReceipt } = require("../config/emailService");
 
 // Helper to generate readable ticket code
 function generateTicketCode() {
@@ -30,6 +31,7 @@ router.post("/book-seat", authMiddleware, async (req, res) => {
       voucherCode,
       discountAmount,
       totalAmount,
+      paymentMethod,
     } = req.body;
     
     // Check if any seat is already booked
@@ -64,7 +66,7 @@ router.post("/book-seat", authMiddleware, async (req, res) => {
       discountAmount: Number(discountAmount) || 0,
       totalAmount: Number(totalAmount) || 0,
       status: "Paid",
-      paymentMethod: "Online",
+      paymentMethod: paymentMethod || "Online",
       transactionId: finalTransactionId,
     });
 
@@ -87,7 +89,7 @@ router.post("/book-seat", authMiddleware, async (req, res) => {
       bookingId: newBooking.id,
       userId: req.body.userId,
       amount: Number(totalAmount) || 0,
-      paymentMethod: "Online",
+      paymentMethod: paymentMethod || "Online",
       status: "Success",
     }).catch((err) => console.error("Error logging transaction:", err));
 
@@ -104,6 +106,11 @@ router.post("/book-seat", authMiddleware, async (req, res) => {
       passenger: passengerName || "",
     });
     const qrCodeUrl = await QRCode.toDataURL(qrData).catch(() => "");
+
+    // Email delivery must not turn a completed booking into a failed response.
+    await sendBookingReceipt({ booking: newBooking, bus, qrCodeUrl }).catch((error) => {
+      console.error("Error sending booking receipt:", error.message);
+    });
 
     res.status(200).send({
       message: "Đặt vé và thanh toán thành công!",
@@ -126,7 +133,7 @@ router.post("/book-seat", authMiddleware, async (req, res) => {
 // ── Make payment (Stripe or Demo checkout) ─────────────────────────────────
 router.post("/make-payment", authMiddleware, async (req, res) => {
   try {
-    const { token, amount } = req.body;
+    const { token, amount, paymentMethod } = req.body;
     
     // If stripe token provided
     if (token && token.id) {
@@ -151,6 +158,7 @@ router.post("/make-payment", authMiddleware, async (req, res) => {
           message: "Thanh toán qua Stripe thành công",
           data: {
             transactionId: payment.id || payment.source.id,
+            paymentMethod: paymentMethod || "Card",
           },
           success: true,
         });
@@ -161,6 +169,7 @@ router.post("/make-payment", authMiddleware, async (req, res) => {
           message: "Thanh toán thành công (Mô phỏng)",
           data: {
             transactionId: `ST_DEMO_${uuidv4().substring(0, 8).toUpperCase()}`,
+            paymentMethod: paymentMethod || "Card",
           },
           success: true,
         });
@@ -172,6 +181,7 @@ router.post("/make-payment", authMiddleware, async (req, res) => {
       message: "Thanh toán trực tuyến thành công",
       data: {
         transactionId: `PAY_${Date.now()}`,
+        paymentMethod: paymentMethod || "Online",
       },
       success: true,
     });

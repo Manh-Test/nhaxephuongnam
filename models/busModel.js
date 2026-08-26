@@ -126,7 +126,8 @@ const Bus = {
       where.push("status = @status");
     }
 
-    const whereClause = where.length ? `WHERE ${where.join(" AND ")}` : "";
+    where.push("status <> 'Archived'");
+    const whereClause = `WHERE ${where.join(" AND ")}`;
     const result = await request.query(`SELECT * FROM Buses ${whereClause} ORDER BY id DESC`);
     let buses = result.recordset.map(mapRow);
 
